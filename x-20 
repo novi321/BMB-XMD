@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>X-20 • Free Books Library</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body { font-family: system-ui, sans-serif; }
+    .book-card { transition: all 0.3s ease; }
+    .book-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); }
+    .hero-bg { background: linear-gradient(135deg, #1e2937 0%, #334155 100%); }
+  </style>
+</head>
+<body class="bg-gray-950 text-gray-100">
+
+  <!-- Header -->
+  <header class="bg-black border-b border-gray-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <i class="fas fa-book-open text-3xl text-emerald-400"></i>
+        <h1 class="text-3xl font-bold tracking-tight">X-20</h1>
+      </div>
+      <nav class="flex gap-6 text-sm">
+        <a href="#" onclick="showSection('home')" class="hover:text-emerald-400">Home</a>
+        <a href="#" onclick="showSection('browse')" class="hover:text-emerald-400">Browse</a>
+        <a href="#" onclick="showSection('upload')" class="hover:text-emerald-400">Upload</a>
+      </nav>
+      <button onclick="toggleTheme()" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-xl flex items-center gap-2">
+        <i class="fas fa-moon" id="theme-icon"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section id="home" class="hero-bg py-24 text-center">
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="text-5xl font-bold mb-6">Discover & Share Free Books</h2>
+      <p class="text-xl text-gray-300 mb-10">X-20 is a free digital library. Browse, download, and upload books without limits.</p>
+      <div class="max-w-md mx-auto">
+        <div class="relative">
+          <input id="searchInput" type="text" placeholder="Search books by title or author..." 
+                 class="w-full bg-gray-900 border border-gray-700 rounded-2xl py-4 px-6 text-lg focus:outline-none focus:border-emerald-500">
+          <button onclick="searchBooks()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-emerald-500 hover:bg-emerald-600 px-8 py-3 rounded-xl font-medium">
+            Search
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Browse Books -->
+  <section id="browse" class="max-w-7xl mx-auto px-6 py-12">
+    <h2 class="text-3xl font-semibold mb-8 flex items-center gap-3">
+      <i class="fas fa-book"></i> Available Books
+    </h2>
+    <div id="booksGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6"></div>
+  </section>
+
+  <!-- Upload Section -->
+  <section id="upload" class="max-w-2xl mx-auto px-6 py-12 hidden">
+    <div class="bg-gray-900 border border-gray-800 rounded-3xl p-8">
+      <h2 class="text-3xl font-semibold mb-8">Upload a New Book</h2>
+      <div class="space-y-6">
+        <div>
+          <label class="block text-sm mb-2">Book Title</label>
+          <input id="title" type="text" class="w-full bg-gray-800 border border-gray-700 rounded-xl p-4">
+        </div>
+        <div>
+          <label class="block text-sm mb-2">Author</label>
+          <input id="author" type="text" class="w-full bg-gray-800 border border-gray-700 rounded-xl p-4">
+        </div>
+        <div>
+          <label class="block text-sm mb-2">Category</label>
+          <select id="category" class="w-full bg-gray-800 border border-gray-700 rounded-xl p-4">
+            <option>Fiction</option>
+            <option>Technology</option>
+            <option>Science</option>
+            <option>Self-help</option>
+            <option>History</option>
+            <option>Mystery</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm mb-2">Description</label>
+          <textarea id="desc" rows="3" class="w-full bg-gray-800 border border-gray-700 rounded-xl p-4"></textarea>
+        </div>
+        <button onclick="uploadBook()" 
+                class="w-full bg-emerald-500 hover:bg-emerald-600 py-4 rounded-2xl font-semibold text-lg">
+          Upload Book (Demo)
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-black py-12 text-center text-gray-500 text-sm">
+    X-20 • Free Knowledge Sharing • Made for demonstration
+  </footer>
+
+  <script>
+    // Sample Books
+    let books = [
+      {id:1, title:"Dune", author:"Frank Herbert", category:"Fiction", desc:"Epic science fiction novel", img:"https://picsum.photos/id/1015/300/400"},
+      {id:2, title:"Atomic Habits", author:"James Clear", category:"Self-help", desc:"Build good habits", img:"https://picsum.photos/id/133/300/400"},
+      {id:3, title:"The Lean Startup", author:"Eric Ries", category:"Technology", desc:"How modern companies innovate", img:"https://picsum.photos/id/201/300/400"},
+      {id:4, title:"Sapiens", author:"Yuval Noah Harari", category:"History", desc:"Brief history of humankind", img:"https://picsum.photos/id/237/300/400"},
+      {id:5, title:"The Midnight Library", author:"Matt Haig", category:"Fiction", desc:"What if you could live every life?", img:"https://picsum.photos/id/251/300/400"},
+      {id:6, title:"Clean Code", author:"Robert C. Martin", category:"Technology", desc:"A handbook of agile software craftsmanship", img:"https://picsum.photos/id/180/300/400"},
+    ];
+
+    // Render books
+    function renderBooks(filteredBooks) {
+      const grid = document.getElementById('booksGrid');
+      grid.innerHTML = '';
+      filteredBooks.forEach(book => {
+        const card = document.createElement('div');
+        card.className = 'book-card bg-gray-900 rounded-2xl overflow-hidden border border-gray-800';
+        card.innerHTML = `
+          <img src="${book.img}" class="w-full h-64 object-cover">
+          <div class="p-4">
+            <h3 class="font-semibold text-lg leading-tight">${book.title}</h3>
+            <p class="text-gray-400 text-sm">${book.author}</p>
+            <p class="text-emerald-400 text-xs mt-1">${book.category}</p>
+            <div class="mt-4 flex gap-2">
+              <button onclick="downloadBook(${book.id})" 
+                      class="flex-1 bg-emerald-600 hover:bg-emerald-700 py-2 rounded-xl text-sm font-medium">
+                Download
+              </button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Search
+    function searchBooks() {
+      const term = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = books.filter(b => 
+        b.title.toLowerCase().includes(term) || 
+        b.author.toLowerCase().includes(term) ||
+        b.category.toLowerCase().includes(term)
+      );
+      renderBooks(filtered.length ? filtered : books);
+    }
+
+    // Simulate Download
+    function downloadBook(id) {
+      const book = books.find(b => b.id === id);
+      if (book) {
+        alert(`Downloading "${book.title}" by ${book.author}... (Demo - file would download here)`);
+      }
+    }
+
+    // Upload simulation
+    function uploadBook() {
+      const title = document.getElementById('title').value || "Untitled Book";
+      const author = document.getElementById('author').value || "Unknown Author";
+      const category = document.getElementById('category').value;
+      const desc = document.getElementById('desc').value;
+
+      if (!title || !author) {
+        alert("Please enter title and author");
+        return;
+      }
+
+      const newBook = {
+        id: Date.now(),
+        title: title,
+        author: author,
+        category: category,
+        desc: desc,
+        img: `https://picsum.photos/id/${Math.floor(Math.random()*300)}/300/400`
+      };
+
+      books.unshift(newBook);
+      renderBooks(books);
+      alert(`"${title}" has been added to the X-20 library! 🎉`);
+      
+      // Clear form
+      document.getElementById('title').value = '';
+      document.getElementById('author').value = '';
+      document.getElementById('desc').value = '';
+    }
+
+    // Theme toggle
+    function toggleTheme() {
+      document.documentElement.classList.toggle('light');
+      const icon = document.getElementById('theme-icon');
+      if (icon.classList.contains('fa-moon')) {
+        icon.classList.replace('fa-moon', 'fa-sun');
+      } else {
+        icon.classList.replace('fa-sun', 'fa-moon');
+      }
+    }
+
+    // Show sections
+    function showSection(section) {
+      document.getElementById('home').classList.add('hidden');
+      document.getElementById('browse').classList.add('hidden');
+      document.getElementById('upload').classList.add('hidden');
+      
+      if (section === 'home') document.getElementById('home').classList.remove('hidden');
+      else if (section === 'browse') {
+        document.getElementById('browse').classList.remove('hidden');
+        renderBooks(books);
+      }
+      else if (section === 'upload') document.getElementById('upload').classList.remove('hidden');
+    }
+
+    // Initialize
+    window.onload = () => {
+      showSection('browse');  // Start on Browse tab
+    };
+  </script>
+</body>
+</html>
